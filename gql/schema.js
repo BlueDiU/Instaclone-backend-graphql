@@ -13,9 +13,22 @@ const typeDefs = gql`
     createdAt: String
   }
 
+  # Datos que recibe la mutación al registro
+  input UserInput {
+    name: String!
+    username: String!
+    email: String!
+    password: String!
+  }
+
   type Query {
     # User
     getUser: User
+  }
+
+  type Mutation {
+    # User
+    register(input: UserInput): User
   }
 `;
 
