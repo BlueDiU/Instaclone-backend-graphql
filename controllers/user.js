@@ -1,5 +1,19 @@
 const User = require('../models/User');
 const bcryptjs = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+function createToken(user, SECRET_KEY, expiresIn) {
+  const { id, name, email, username } = user;
+
+  const payload = {
+    id,
+    name,
+    email,
+    username,
+  };
+
+  return jwt.sign(payload, SECRET_KEY, { expiresIn });
+}
 
 async function registerController(input) {
   const newUser = input;
@@ -30,4 +44,27 @@ async function registerController(input) {
   }
 }
 
-module.exports = { registerController };
+async function loginController(input) {
+  const { email, password } = input;
+
+  const userFound = await User.findOne({
+    email: email.toLowerCase(),
+  });
+
+  if (!userFound)
+    throw new Error('Correo o contraseña no validos');
+
+  const passwordSuccess = await bcryptjs.compare(
+    password,
+    userFound.password
+  );
+
+  if (!passwordSuccess)
+    throw new Error('Correo o contraseña no validos');
+
+  return {
+    token: createToken(userFound, process.env.SECRET_KEY, '24h'),
+  };
+}
+
+module.exports = { registerController, loginController };

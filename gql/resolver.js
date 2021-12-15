@@ -1,4 +1,7 @@
-const { registerController } = require('../controllers/user');
+const {
+  registerController,
+  loginController,
+} = require('../controllers/user');
 
 const resolvers = {
   Query: {
@@ -10,7 +13,8 @@ const resolvers = {
   },
   Mutation: {
     // User
-    register: async (_, { input }) => registerController(input),
+    register: (_, { input }) => registerController(input),
+    login: (_, { input }) => loginController(input),
   },
 };
 
