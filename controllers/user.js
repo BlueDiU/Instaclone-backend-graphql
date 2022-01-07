@@ -79,8 +79,15 @@ async function getUser(id, username) {
   return user;
 }
 
+async function updateAvatar(file) {
+  console.log(file);
+
+  return null;
+}
+
 module.exports = {
   registerController,
   loginController,
   getUser,
+  updateAvatar,
 };
