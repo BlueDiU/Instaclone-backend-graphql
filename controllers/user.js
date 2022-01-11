@@ -1,6 +1,10 @@
 const User = require('../models/User');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { cloudinary } = require('../utils/cloudinary');
+
+const path = require('path');
+const fs = require('fs');
 
 function createToken(user, SECRET_KEY, expiresIn) {
   const { id, name, email, username } = user;
@@ -79,11 +83,37 @@ async function getUser(id, username) {
   return user;
 }
 
-async function updateAvatar(file) {
-  console.log(file);
-  console.log('subido');
+async function updateAvatar(file, ctx) {
+  const { id } = ctx.user;
 
-  return null;
+  const { createReadStream, filename } = await file;
+  const { ext } = path.parse(filename);
+  const stream = createReadStream();
+  const imageName = `${id}${ext}`;
+
+  const pathName = path.join(
+    __dirname,
+    `../upload/avatar/${imageName}`
+  );
+  //`/upload/avatar/${imageName}`
+
+  try {
+    const img = await stream.pipe(
+      fs.createWriteStream(pathName)
+    );
+
+    /* const res = await cloudinary.uploader.upload(filename, {
+      folder: 'instaclone',
+    }); */
+
+    return {
+      status: true,
+      urlAvatar: img,
+    };
+  } catch (error) {
+    console.log(error);
+    return { status: false, urlAvatar: null };
+  }
 }
 
 module.exports = {

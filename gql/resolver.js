@@ -13,7 +13,8 @@ const resolvers = {
     register: (_, { input }) =>
       userCtrl.registerController(input),
     login: (_, { input }) => userCtrl.loginController(input),
-    updateAvatar: (_, { file }) => userCtrl.updateAvatar(file),
+    updateAvatar: (_, { file }, ctx) =>
+      userCtrl.updateAvatar(file, ctx),
   },
 };
 
