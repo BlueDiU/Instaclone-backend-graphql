@@ -102,13 +102,18 @@ async function updateAvatar(file, ctx) {
       fs.createWriteStream(pathName)
     );
 
-    /* const res = await cloudinary.uploader.upload(filename, {
-      folder: 'instaclone',
-    }); */
+    let avatarImg = '';
+
+    if (img.path) {
+      avatarImg = imageName;
+    }
+
+    // save url in user id doc
+    await User.findByIdAndUpdate(id, { avatar: avatarImg });
 
     return {
       status: true,
-      urlAvatar: img,
+      urlAvatar: avatarImg,
     };
   } catch (error) {
     console.log(error);
