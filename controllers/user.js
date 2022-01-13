@@ -1,8 +1,6 @@
 const User = require('../models/User');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { cloudinary } = require('../utils/cloudinary');
-
 const path = require('path');
 const fs = require('fs');
 
@@ -85,7 +83,6 @@ async function getUser(id, username) {
 
 async function updateAvatar(file, ctx) {
   const { id } = ctx.user;
-
   const { createReadStream, filename } = await file;
   const { ext } = path.parse(filename);
   const stream = createReadStream();
@@ -98,6 +95,22 @@ async function updateAvatar(file, ctx) {
   //`/upload/avatar/${imageName}`
 
   try {
+    // get current user from MongoDB
+    let user = await User.findById(id);
+
+    // clean previous images
+    if (user.img) {
+      // delete the image of the server
+      const imgPath = path.join(
+        __dirname,
+        `../upload/avatar/${imageName}`
+      );
+
+      if (fs.existsSync(imgPath)) {
+        fs.unlinkSync(imgPath);
+      }
+    }
+
     const img = await stream.pipe(
       fs.createWriteStream(pathName)
     );
@@ -110,6 +123,9 @@ async function updateAvatar(file, ctx) {
 
     // save url in user id doc
     await User.findByIdAndUpdate(id, { avatar: avatarImg });
+
+    console.log(user);
+    console.log(img.path);
 
     return {
       status: true,
