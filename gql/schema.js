@@ -19,6 +19,10 @@ const typeDefs = gql`
     token: String
   }
 
+  type ImageRequest {
+    img: String
+  }
+
   type UpdateAvatar {
     status: Boolean
     urlAvatar: String
@@ -40,6 +44,7 @@ const typeDefs = gql`
   type Query {
     # User
     getUser(id: ID, username: String): User
+    getAvatarImg: ImageRequest
   }
 
   type Mutation {

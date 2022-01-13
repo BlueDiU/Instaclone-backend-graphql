@@ -7,6 +7,7 @@ const resolvers = {
     // User
     getUser: (_, { id, username }) =>
       userCtrl.getUser(id, username),
+    getAvatarImg: (_, params, ctx) => userCtrl.getAvatarImg(ctx),
   },
   Mutation: {
     // User

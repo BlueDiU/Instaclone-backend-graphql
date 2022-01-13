@@ -124,9 +124,6 @@ async function updateAvatar(file, ctx) {
     // save url in user id doc
     await User.findByIdAndUpdate(id, { avatar: avatarImg });
 
-    console.log(user);
-    console.log(img.path);
-
     return {
       status: true,
       urlAvatar: avatarImg,
@@ -137,9 +134,35 @@ async function updateAvatar(file, ctx) {
   }
 }
 
+async function getAvatarImg(ctx) {
+  const { id } = ctx.user;
+
+  const user = await User.findById(id);
+
+  let img = '';
+
+  // clean previous images
+  if (user.avatar) {
+    // there is that delete the image of the server
+    const imgPath = path.join(
+      __dirname,
+      `../upload/avatar/${user.avatar}`
+    );
+
+    if (fs.existsSync(imgPath)) {
+      img = imgPath;
+    }
+  }
+
+  return {
+    img,
+  };
+}
+
 module.exports = {
   registerController,
   loginController,
   getUser,
   updateAvatar,
+  getAvatarImg,
 };
