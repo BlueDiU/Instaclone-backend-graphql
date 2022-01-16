@@ -3,6 +3,7 @@ const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const fs = require('fs');
+const { findByIdAndUpdate } = require('../models/User');
 
 function createToken(user, SECRET_KEY, expiresIn) {
   const { id, name, email, username } = user;
@@ -115,10 +116,10 @@ async function updateAvatar(file, ctx) {
       fs.createWriteStream(pathName)
     );
 
-    let avatarImg = '';
+    let avatarImg = 'http://localhost:4000/upload/avatar/';
 
     if (img.path) {
-      avatarImg = imageName;
+      avatarImg += imageName;
     }
 
     // save url in user id doc
@@ -134,29 +135,17 @@ async function updateAvatar(file, ctx) {
   }
 }
 
-async function getAvatarImg(ctx) {
+async function deleteAvatar(ctx) {
   const { id } = ctx.user;
 
-  const user = await User.findById(id);
+  try {
+    await User.findByIdAndUpdate(id, { avatar: '' });
 
-  let img = '';
-
-  // clean previous images
-  if (user.avatar) {
-    // there is that delete the image of the server
-    const imgPath = path.join(
-      __dirname,
-      `../upload/avatar/${user.avatar}`
-    );
-
-    if (fs.existsSync(imgPath)) {
-      img = imgPath;
-    }
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
   }
-
-  return {
-    img,
-  };
 }
 
 module.exports = {
@@ -164,5 +153,5 @@ module.exports = {
   loginController,
   getUser,
   updateAvatar,
-  getAvatarImg,
+  deleteAvatar,
 };

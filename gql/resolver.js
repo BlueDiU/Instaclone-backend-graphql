@@ -7,7 +7,6 @@ const resolvers = {
     // User
     getUser: (_, { id, username }) =>
       userCtrl.getUser(id, username),
-    getAvatarImg: (_, params, ctx) => userCtrl.getAvatarImg(ctx),
   },
   Mutation: {
     // User
@@ -16,6 +15,7 @@ const resolvers = {
     login: (_, { input }) => userCtrl.loginController(input),
     updateAvatar: (_, { file }, ctx) =>
       userCtrl.updateAvatar(file, ctx),
+    deleteAvatar: (_, {}, ctx) => userCtrl.deleteAvatar(ctx),
   },
 };
 

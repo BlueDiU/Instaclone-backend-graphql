@@ -50,6 +50,12 @@ async function server() {
   app.use(graphqlUploadExpress());
 
   serverApollo.applyMiddleware({ app });
+
+  /*
+   Show static files like images and files: specify route and folder where you can get the static files
+  */
+  app.use('/upload', express.static('upload'));
+
   await new Promise((r) =>
     app.listen({ port: process.env.PORT || 4000 }, r)
   );
