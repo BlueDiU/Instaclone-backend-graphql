@@ -139,7 +139,21 @@ async function deleteAvatar(ctx) {
   const { id } = ctx.user;
 
   try {
-    await User.findByIdAndUpdate(id, { avatar: '' });
+    const user = await User.findById(id);
+
+    /* Delete avatar from file system */
+    if (user.avatar) {
+      // delete the image of the server
+      const imgPath = path.join(
+        __dirname,
+        `../upload/avatar/${user.avatar}`
+      );
+
+      if (fs.existsSync(imgPath)) {
+        fs.unlinkSync(imgPath);
+        await User.findByIdAndUpdate(id, { avatar: '' });
+      }
+    }
 
     return true;
   } catch (error) {
