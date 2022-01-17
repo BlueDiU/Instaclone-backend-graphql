@@ -84,10 +84,10 @@ async function getUser(id, username) {
 
 async function updateAvatar(file, ctx) {
   const { id } = ctx.user;
-  const { createReadStream, filename } = await file;
-  const { ext } = path.parse(filename);
+  const { createReadStream, mimetype } = await file;
+  const ext = mimetype.split('/')[1];
+  const imageName = `${id}.${ext}`;
   const stream = createReadStream();
-  const imageName = `${id}${ext}`;
 
   const pathName = path.join(
     __dirname,
@@ -95,31 +95,31 @@ async function updateAvatar(file, ctx) {
   );
   //`/upload/avatar/${imageName}`
 
-  try {
-    // get current user from MongoDB
-    let user = await User.findById(id);
+  // get current user from MongoDB
+  let user = await User.findById(id);
 
-    // clean previous images
-    if (user.img) {
-      // delete the image of the server
-      const imgPath = path.join(
-        __dirname,
-        `../upload/avatar/${imageName}`
-      );
+  // clean previous images
+  if (user.avatar) {
+    // delete the image of the server
+    const imgPath = path.join(
+      __dirname,
+      `../upload/avatar/${user.avatar}`
+    );
 
-      if (fs.existsSync(imgPath)) {
-        fs.unlinkSync(imgPath);
-      }
+    if (fs.existsSync(imgPath)) {
+      fs.unlinkSync(imgPath);
     }
+  }
 
+  try {
     const img = await stream.pipe(
       fs.createWriteStream(pathName)
     );
 
-    let avatarImg = 'http://localhost:4000/upload/avatar/';
+    let avatarImg = '';
 
     if (img.path) {
-      avatarImg += imageName;
+      avatarImg = imageName;
     }
 
     // save url in user id doc
