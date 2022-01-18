@@ -16,6 +16,8 @@ const resolvers = {
     updateAvatar: (_, { file }, ctx) =>
       userCtrl.updateAvatar(file, ctx),
     deleteAvatar: (_, {}, ctx) => userCtrl.deleteAvatar(ctx),
+    updateUser: (_, { input }, ctx) =>
+      userCtrl.updateUser(input, ctx),
   },
 };
 

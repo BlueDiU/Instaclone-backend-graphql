@@ -3,7 +3,7 @@ const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const fs = require('fs');
-const { findByIdAndUpdate } = require('../models/User');
+const { Error } = require('mongoose');
 
 function createToken(user, SECRET_KEY, expiresIn) {
   const { id, name, email, username } = user;
@@ -162,10 +162,47 @@ async function deleteAvatar(ctx) {
   }
 }
 
+async function updateUser(input, ctx) {
+  const { id } = ctx.user;
+
+  try {
+    if (input.currentPassword && input.newPassword) {
+      // change password
+      const userFound = await User.findById(id);
+      const passwordSuccess = await bcryptjs.compare(
+        input.currentPassword,
+        userFound.password
+      );
+
+      if (!passwordSuccess)
+        throw new Error('Contraseña incorrecta');
+
+      /* Encrypt new password and update password in db */
+      const salt = await bcryptjs.genSaltSync(10);
+      const newPasswordCrypt = await bcryptjs.hash(
+        input.newPassword,
+        salt
+      );
+
+      await User.findByIdAndUpdate(id, {
+        password: newPasswordCrypt,
+      });
+    } else {
+      await User.findByIdAndUpdate(id, input);
+    }
+
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+
 module.exports = {
   registerController,
   loginController,
   getUser,
   updateAvatar,
   deleteAvatar,
+  updateUser,
 };
