@@ -7,6 +7,7 @@ const resolvers = {
     // User
     getUser: (_, { id, username }) =>
       userCtrl.getUser(id, username),
+    search: (_, { search }) => userCtrl.search(search),
   },
   Mutation: {
     // User
