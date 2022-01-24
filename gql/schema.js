@@ -59,6 +59,9 @@ const typeDefs = gql`
     updateAvatar(file: Upload!): UpdateAvatar!
     deleteAvatar: Boolean
     updateUser(input: UserUpdateInput): Boolean
+
+    # Follows
+    follow(username: String!): Boolean
   }
 `;
 
