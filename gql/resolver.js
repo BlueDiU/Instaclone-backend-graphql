@@ -9,6 +9,10 @@ const resolvers = {
     getUser: (_, { id, username }) =>
       userCtrl.getUser(id, username),
     search: (_, { search }) => userCtrl.search(search),
+
+    // Follow
+    isFollow: (_, { username }, ctx) =>
+      followCtrl.isFollow(username, ctx),
   },
   Mutation: {
     // User
@@ -24,6 +28,8 @@ const resolvers = {
     // Follow
     follow: (_, { username }, ctx) =>
       followCtrl.follow(username, ctx),
+    unFollow: (_, { username }, ctx) =>
+      followCtrl.unFollow(username, ctx),
   },
 };
 

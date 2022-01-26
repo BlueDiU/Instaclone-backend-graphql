@@ -50,6 +50,9 @@ const typeDefs = gql`
     # User
     getUser(id: ID, username: String): User
     search(search: String): [User]
+
+    # Follow
+    isFollow(username: String): Boolean
   }
 
   type Mutation {
@@ -62,6 +65,7 @@ const typeDefs = gql`
 
     # Follows
     follow(username: String!): Boolean
+    unFollow(username: String!): Boolean
   }
 `;
 
