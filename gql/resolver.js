@@ -13,6 +13,10 @@ const resolvers = {
     // Follow
     isFollow: (_, { username }, ctx) =>
       followCtrl.isFollow(username, ctx),
+    getFollowers: (_, { username }) =>
+      followCtrl.getFollowers(username),
+    getFollowing: (_, { username }) =>
+      followCtrl.getFollowing(username),
   },
   Mutation: {
     // User
