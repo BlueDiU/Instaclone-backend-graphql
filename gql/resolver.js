@@ -1,5 +1,6 @@
 const userCtrl = require('../controllers/user');
 const followCtrl = require('../controllers/follow');
+const publicationCtrl = require('../controllers/publication');
 const { GraphQLUpload } = require('graphql-upload');
 
 const resolvers = {
@@ -17,6 +18,10 @@ const resolvers = {
       followCtrl.getFollowers(username),
     getFollowing: (_, { username }) =>
       followCtrl.getFollowing(username),
+
+    // Publication
+    getPublications: (_, { username }) =>
+      publicationCtrl.getPublications(username),
   },
   Mutation: {
     // User
@@ -34,6 +39,10 @@ const resolvers = {
       followCtrl.follow(username, ctx),
     unFollow: (_, { username }, ctx) =>
       followCtrl.unFollow(username, ctx),
+
+    // Publish
+    publish: (_, { file }, ctx) =>
+      publicationCtrl.publish(file, ctx),
   },
 };
 

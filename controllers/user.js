@@ -93,7 +93,6 @@ async function updateAvatar(file, ctx) {
     __dirname,
     `../upload/avatar/${imageName}`
   );
-  //`/upload/avatar/${imageName}`
 
   // get current user from MongoDB
   let user = await User.findById(id);
