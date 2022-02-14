@@ -2,6 +2,7 @@ const userCtrl = require('../controllers/user');
 const followCtrl = require('../controllers/follow');
 const publicationCtrl = require('../controllers/publication');
 const commentCtrl = require('../controllers/comment');
+const likeCtrl = require('../controllers/like');
 const { GraphQLUpload } = require('graphql-upload');
 
 const resolvers = {
@@ -27,6 +28,12 @@ const resolvers = {
     // Comment
     getComments: (_, { idPublication }) =>
       commentCtrl.getComments(idPublication),
+
+    // Like
+    isLike: (_, { idPublication }, ctx) =>
+      likeCtrl.isLike(idPublication, ctx),
+    countLikes: (_, { idPublication }) =>
+      likeCtrl.countLikes(idPublication),
   },
   Mutation: {
     // User
@@ -52,6 +59,12 @@ const resolvers = {
     // Comment
     addComment: (_, { input }, ctx) =>
       commentCtrl.addComment(input, ctx),
+
+    // Like
+    addLike: (_, { idPublication }, ctx) =>
+      likeCtrl.addLike(idPublication, ctx),
+    deleteLike: (_, { idPublication }, ctx) =>
+      likeCtrl.deleteLike(idPublication, ctx),
   },
 };
 
