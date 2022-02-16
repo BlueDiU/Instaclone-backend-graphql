@@ -44,6 +44,14 @@ const typeDefs = gql`
     createAt: String
   }
 
+  type FeedPublication {
+    id: ID
+    idUser: User
+    file: String
+    typeFile: String
+    createAt: String
+  }
+
   # Datos que recibe la mutación al registro
   input UserInput {
     name: String!
@@ -83,6 +91,7 @@ const typeDefs = gql`
 
     # Publication
     getPublications(username: String!): [Publication]
+    getPublicationsFollowing: [FeedPublication]
 
     # Comment
     getComments(idPublication: ID!): [Comment]

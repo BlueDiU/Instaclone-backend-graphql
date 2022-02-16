@@ -24,6 +24,8 @@ const resolvers = {
     // Publication
     getPublications: (_, { username }) =>
       publicationCtrl.getPublications(username),
+    getPublicationsFollowing: (_, {}, ctx) =>
+      publicationCtrl.getPublicationsFollowing(ctx),
 
     // Comment
     getComments: (_, { idPublication }) =>

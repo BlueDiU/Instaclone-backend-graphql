@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const User = require('../models/User');
 const Publication = require('../models/Publication');
+const Follow = require('../models/Follow');
 
 async function publish(file, ctx) {
   const {
@@ -63,4 +64,45 @@ async function getPublications(username) {
   return publication;
 }
 
-module.exports = { publish, getPublications };
+async function getPublicationsFollowing(ctx) {
+  /* Get all user that are follow me */
+  const following = await Follow.find({
+    idUser: ctx.user.id,
+  }).populate('follow');
+
+  const followingList = [];
+
+  /* Creata array with the user */
+  for await (const data of following) {
+    followingList.push(data.follow);
+  }
+
+  const publicationList = [];
+
+  /* 
+    take  userArray and iterate to get all publications for each user
+    and sort for the most recent publications added
+  */
+  for await (const data of followingList) {
+    publications = await Publication.find()
+      .where({ idUser: data._id })
+      .sort({ createAt: -1 })
+      .populate('idUser');
+
+    /* Spread the array and get only the objects */
+    publicationList.push(...publications);
+  }
+
+  /* sort by publications by date the highest to lowest */
+  const result = publicationList.sort((a, b) => {
+    return new Date(b.createAt) - new Date(a.createAt);
+  });
+
+  return result;
+}
+
+module.exports = {
+  publish,
+  getPublications,
+  getPublicationsFollowing,
+};
