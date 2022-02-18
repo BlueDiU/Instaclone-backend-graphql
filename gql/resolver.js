@@ -20,6 +20,8 @@ const resolvers = {
       followCtrl.getFollowers(username),
     getFollowing: (_, { username }) =>
       followCtrl.getFollowing(username),
+    getNotFollowers: (_, {}, ctx) =>
+      followCtrl.getNotFollowers(ctx),
 
     // Publication
     getPublications: (_, { username }) =>
