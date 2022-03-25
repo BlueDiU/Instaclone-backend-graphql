@@ -1,9 +1,10 @@
+const { GraphQLUpload } = require('graphql-upload');
+
 const userCtrl = require('../controllers/user');
 const followCtrl = require('../controllers/follow');
 const publicationCtrl = require('../controllers/publication');
 const commentCtrl = require('../controllers/comment');
 const likeCtrl = require('../controllers/like');
-const { GraphQLUpload } = require('graphql-upload');
 
 const resolvers = {
   Upload: GraphQLUpload,
