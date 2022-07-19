@@ -4,8 +4,9 @@ const fs = require('fs');
 const User = require('../models/User');
 const Publication = require('../models/Publication');
 const Follow = require('../models/Follow');
+const uploadToCloudinary = require('../utils/uploadToCloudinary');
 
-async function publish(file, ctx) {
+async function publishFS(file, ctx) {
   const {
     user: { id },
   } = ctx;
@@ -43,6 +44,39 @@ async function publish(file, ctx) {
     return {
       status: true,
       urlFile: avatarImg,
+    };
+  } catch (error) {
+    console.log(error);
+    return { status: false, urlFile: '' };
+  }
+}
+async function publish(file, ctx) {
+  const {
+    user: { id },
+  } = ctx;
+  const { createReadStream, mimetype } = await file;
+
+  const fileStream = createReadStream();
+
+  try {
+    const res = await uploadToCloudinary(
+      fileStream,
+      'publications'
+    );
+
+    // save url in publication doc
+    const publication = new Publication({
+      idUser: id,
+      file: res.secure_url,
+      typeFile: mimetype.split('/')[0],
+      createAt: Date.now(),
+    });
+
+    publication.save();
+
+    return {
+      status: true,
+      urlFile: res.secure_url,
     };
   } catch (error) {
     console.log(error);
