@@ -1,8 +1,7 @@
 const User = require('../models/User');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const path = require('path');
-const fs = require('fs');
+
 const { Error } = require('mongoose');
 
 function createToken(user, SECRET_KEY, expiresIn) {
@@ -82,85 +81,6 @@ async function getUser(id, username) {
   return user;
 }
 
-async function updateAvatar(file, ctx) {
-  const { id } = ctx.user;
-  const { createReadStream, mimetype } = await file;
-  const ext = mimetype.split('/')[1];
-  const imageName = `${id}.${ext}`;
-  const stream = createReadStream();
-
-  const pathName = path.join(
-    __dirname,
-    `../upload/avatar/${imageName}`
-  );
-
-  // get current user from MongoDB
-  let user = await User.findById(id);
-
-  // clean previous images
-  if (user.avatar) {
-    // delete the image of the server
-    const imgPath = path.join(
-      __dirname,
-      `../upload/avatar/${user.avatar}`
-    );
-
-    if (fs.existsSync(imgPath)) {
-      fs.unlinkSync(imgPath);
-    }
-  }
-
-  try {
-    const img = await stream.pipe(
-      fs.createWriteStream(pathName)
-    );
-
-    let avatarImg = '';
-
-    if (img.path) {
-      avatarImg = imageName;
-    }
-
-    // save url in user id doc
-    await User.findByIdAndUpdate(id, { avatar: avatarImg });
-
-    return {
-      status: true,
-      urlAvatar: avatarImg,
-    };
-  } catch (error) {
-    console.log(error);
-    return { status: false, urlAvatar: null };
-  }
-}
-
-async function deleteAvatar(ctx) {
-  const { id } = ctx.user;
-
-  try {
-    const user = await User.findById(id);
-
-    /* Delete avatar from file system */
-    if (user.avatar) {
-      // delete the image of the server
-      const imgPath = path.join(
-        __dirname,
-        `../upload/avatar/${user.avatar}`
-      );
-
-      if (fs.existsSync(imgPath)) {
-        fs.unlinkSync(imgPath);
-        await User.findByIdAndUpdate(id, { avatar: '' });
-      }
-    }
-
-    return true;
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
-}
-
 async function updateUser(input, ctx) {
   const { id } = ctx.user;
 
@@ -209,8 +129,6 @@ module.exports = {
   registerController,
   loginController,
   getUser,
-  updateAvatar,
-  deleteAvatar,
   updateUser,
   search,
 };

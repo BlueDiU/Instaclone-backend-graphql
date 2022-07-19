@@ -1,6 +1,7 @@
 const { GraphQLUpload } = require('graphql-upload');
 
 const userCtrl = require('../controllers/user');
+const avatarCtrl = require('../controllers/avatar');
 const followCtrl = require('../controllers/follow');
 const publicationCtrl = require('../controllers/publication');
 const commentCtrl = require('../controllers/comment');
@@ -46,8 +47,8 @@ const resolvers = {
       userCtrl.registerController(input),
     login: (_, { input }) => userCtrl.loginController(input),
     updateAvatar: (_, { file }, ctx) =>
-      userCtrl.updateAvatar(file, ctx),
-    deleteAvatar: (_, {}, ctx) => userCtrl.deleteAvatar(ctx),
+      avatarCtrl.updateAvatar(file, ctx),
+    deleteAvatar: (_, {}, ctx) => avatarCtrl.deleteAvatar(ctx),
     updateUser: (_, { input }, ctx) =>
       userCtrl.updateUser(input, ctx),
 
