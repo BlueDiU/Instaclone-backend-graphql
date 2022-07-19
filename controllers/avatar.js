@@ -1,10 +1,13 @@
+/* Models */
 const User = require('../models/User');
 
+/* libs */
 const path = require('path');
 const fs = require('fs');
-const uploadToCloudinary = require('../utils/uploadToCloudinary');
-
 const cloudinary = require('cloudinary');
+
+/* utils */
+const uploadToCloudinary = require('../utils/uploadToCloudinary');
 
 /* Upload an image to cloudinary */
 async function updateAvatar(file, ctx) {

@@ -1,9 +1,13 @@
-const { v4: uuidv4, v4 } = require('uuid');
-const path = require('path');
-const fs = require('fs');
+/* Models */
 const User = require('../models/User');
 const Publication = require('../models/Publication');
 const Follow = require('../models/Follow');
+
+/* libs */
+const path = require('path');
+const fs = require('fs');
+const { v4: uuidv4, v4 } = require('uuid');
+
 const uploadToCloudinary = require('../utils/uploadToCloudinary');
 
 async function publishFS(file, ctx) {
